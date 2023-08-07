@@ -1,4 +1,4 @@
-import AppointmentItem from "../appointmentItem.tsx/AppointmentItem";
+import AppointmentItem from "../appointmentItem/AppointmentItem";
 
 function HistoryList() {
 	return (

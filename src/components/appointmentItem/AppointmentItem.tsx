@@ -1,17 +1,28 @@
+import { useEffect, useState } from "react";
 import "./appointmentItem.scss";
+import dayjs from "dayjs";
+
 import { ActiveAppointment } from "../../shared/interfaces/appointment.interface";
 
 function AppointmentItem({ id, name, service, phone, date }: ActiveAppointment) {
+    const [timeLeft, changeTimeLeft] = useState<string | null>(null);
+    useEffect(() => {
+        console.log(dayjs(date).diff(undefined, 'h'))
+        console.log(dayjs(date).diff(undefined, 'm') % 60)
+    }, [date])
+
+
+    const formattefDate = dayjs(date).format('DD/MM/YYYY HH:mm')
     return (
         <div className="appointment">
             <div className="appointment__info">
                 <span className="appointment__date">
-                    Date: DD/MM/YYYY HH:mm
+                    Date: {formattefDate}
                 </span>
-                <span className="appointment__name">Name: Alex Smith</span>
-                <span className="appointment__service">Service: Manicure</span>
+                <span className="appointment__name">{name}</span>
+                <span className="appointment__service">Service: {service}</span>
                 <span className="appointment__phone">
-                    Phone: +1 948 945 344
+                    Phone: {phone}
                 </span>
             </div>
             <div className="appointment__time">

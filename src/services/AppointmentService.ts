@@ -7,7 +7,7 @@ import { IAppointment, ActiveAppointment } from "../shared/interfaces/appointmen
 const requiredFields = ['id', 'date', 'name', 'service', 'phone', 'canceled'];
 
 const useAppointmentService = () => {
-    const {loadingStatus, request} = useHttp();
+    const { loadingStatus, request } = useHttp();
 
     const _apiBase = 'http://localhost:3001/appointments';
 

@@ -1,54 +1,28 @@
-import {useEffect, useState, useRef, useCallback} from "react";
+import { useEffect, useState } from "react";
 import "./appointmentItem.scss";
 import dayjs from "dayjs";
 import getZero from "../../utils/getZero";
 
 import { ActiveAppointment } from "../../shared/interfaces/appointment.interface";
-type Timer = ReturnType<typeof setInterval>;
 
 
 function AppointmentItem({ id, name, service, phone, date }: ActiveAppointment) {
     const [timeLeft, changeTimeLeft] = useState<string | null>(null);
 
-    const timerId = useRef<undefined | Timer>(undefined);
-
-    const timerCreator = useCallback(() => {
-        return () => {
-            let hoursLeft = dayjs(date).diff(undefined, 'h');
-            let minLeft = dayjs(date).diff(undefined, 'm') % 60;
-            changeTimeLeft(`${getZero(hoursLeft)}:${getZero(minLeft)}`)
-
-            let seconds = 60;
-            timerId.current = setInterval(() => {
-                console.log(seconds)
-                if (seconds === 0 && minLeft !== 0) {
-                    minLeft--;
-                    changeTimeLeft(`${getZero(hoursLeft)}:${getZero(minLeft)}`)
-                }
-                if (seconds === 0 && minLeft === 0 && hoursLeft !== 0) {
-                    minLeft = 60;
-                    hoursLeft--;
-                    changeTimeLeft(`${getZero(hoursLeft)}:${getZero(minLeft)}`)
-                }
-                if (seconds === 0 && minLeft === 0 && hoursLeft === 0) {
-                    clearInterval(timerId.current);
-                    console.log('stopped')
-                    return
-                }
-                seconds--;
-
-            }, 1000)
-        }
-    }, [])
 
     useEffect(() => {
-        timerCreator()();
+        changeTimeLeft((
+            `${getZero(dayjs(date).diff(undefined, 'h'))}:${getZero(dayjs(date).diff(undefined, 'm') % 60)}`
+        ))
+
+        const intervalId = setInterval(() => {
+            changeTimeLeft((
+                `${getZero(dayjs(date).diff(undefined, 'h'))}:${getZero(dayjs(date).diff(undefined, 'm') % 60)}`
+            ))
+        }, 60000)
 
         return (() => {
-            if (timerId.current) {
-                clearInterval(timerId.current)
-            };
-            console.log('unmounted')
+            clearInterval(intervalId)
         })
     }, [date])
 

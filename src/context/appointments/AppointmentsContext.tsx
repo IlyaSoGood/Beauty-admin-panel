@@ -1,28 +1,30 @@
 import { ReactNode, createContext, useReducer } from "react";
-import reducer, { IInitialState } from "./reducer";
+import reducer, { IAppointmentState } from "./reducer";
 import useAppointmentService from "../../services/AppointmentService";
 
 import { ActionsTypes } from "./actions";
 
-const initialState: IInitialState = {
+const initialState: IAppointmentState = {
     allAppointments: [],
     activeAppointments: [],
+    appointmentLoadingStatus: 'idle'
 };
 
 interface ProviderProps {
     children: ReactNode;
 }
 
-interface AppointmentContextValue extends IInitialState{
+interface AppointmentContextValue extends IAppointmentState{
     getAppointments: () => void,
-    getActiveAppointments: () => void
+    getActiveAppointments: () => void,
 }
 
 export const AppointmentsContext = createContext<AppointmentContextValue>({
     allAppointments: initialState.allAppointments,
     activeAppointments: initialState.activeAppointments,
     getAppointments: () => {},
-    getActiveAppointments: () => {}
+    getActiveAppointments: () => {},
+    appointmentLoadingStatus: initialState.appointmentLoadingStatus
 })
 
 const AppointmentsContextProvider = ({ children }: ProviderProps) => {
@@ -34,12 +36,13 @@ const AppointmentsContextProvider = ({ children }: ProviderProps) => {
         activeAppointments: state.activeAppointments,
         getAppointments: () => {
             getAllAppointments().then(data =>
-                    dispatch({ type: ActionsTypes.SET_ALL_APPOINTMENTS, payload: data }))
+                dispatch({ type: ActionsTypes.SET_ALL_APPOINTMENTS, payload: data }))
         },
         getActiveAppointments: () => {
             getAllActiveAppointments().then(data =>
                 dispatch({ type: ActionsTypes.SET_ACTIVE_APPOINTMENTS, payload: data }))
         },
+        appointmentLoadingStatus: loadingStatus
     };
     return (
         <AppointmentsContext.Provider value={value}>

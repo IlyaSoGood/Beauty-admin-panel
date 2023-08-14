@@ -1,22 +1,39 @@
-import {ActionsTypes, IAppointmentAction} from "./actions";
+import {ActionsTypes, AppointmentAction} from "./actions";
 import {ActiveAppointment, IAppointment} from "../../shared/interfaces/appointment.interface";
+import { loadingStatusOptions } from "../../hooks/http.hook";
 
-export interface IInitialState {
+export interface IAppointmentState {
     allAppointments: IAppointment[] | [];
     activeAppointments: ActiveAppointment[] | [];
+    appointmentLoadingStatus: loadingStatusOptions;
 }
 
-export default function reducer(state: IInitialState, action: IAppointmentAction) {
+export default function reducer(
+    state: IAppointmentState,
+    action: AppointmentAction
+): IAppointmentState {
     switch(action.type) {
         case ActionsTypes.SET_ALL_APPOINTMENTS:
             return {
                 ...state,
-                allAppointments: action.payload
+                allAppointments: action.payload,
+                appointmentLoadingStatus: 'idle'
             }
         case ActionsTypes.SET_ACTIVE_APPOINTMENTS:
             return {
                 ...state,
-                activeAppointments: action.payload
+                activeAppointments: action.payload,
+                appointmentLoadingStatus: 'idle'
+            }
+        case ActionsTypes.FETCHING_APPOINTMENTS:
+            return {
+                ...state,
+                appointmentLoadingStatus: 'loading'
+            }
+        case ActionsTypes.ERROR_FETCHING_APPOINTMENTS:
+            return {
+                ...state,
+                appointmentLoadingStatus: 'error'
             }
         default:
             return state;

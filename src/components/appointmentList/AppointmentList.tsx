@@ -1,8 +1,11 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
+
 import AppointmentItem from "../appointmentItem/AppointmentItem";
-import { AppointmentsContext } from "../../context/appointments/AppointmentsContext";
+import CancelModal from "../modal/CancelModal";
 import Spinner from "../spinner/Spinner";
 import Error from "../error/Error";
+
+import { AppointmentsContext } from "../../context/appointments/AppointmentsContext";
 
 function AppointmentList() {
 	const {
@@ -15,22 +18,30 @@ function AppointmentList() {
 	}, []);
 	console.log(appointmentLoadingStatus)
 
+	const [isOpen, setIsOpen] = useState(false);
+	const [selectedId, selectId] = useState(0);
+
+	if (appointmentLoadingStatus === 'loading') {
+		return <Spinner/>
+	} else if (appointmentLoadingStatus === 'error') {
+		return (
+				<>
+					<Error/>
+					<button onClick={getActiveAppointments} className="schedule__reload">Перезагрузить</button>
+				</>
+			)
+	}
+
 	return (
 		<>
-			{appointmentLoadingStatus === 'loading'
-				? <Spinner/>
-				: appointmentLoadingStatus === 'error'
-					?  <>
-							<Error/>
-							<button onClick={getActiveAppointments} className="schedule__reload">Перезагрузить</button>
-						</>
-					: activeAppointments.length > 0
-						? activeAppointments.map(item => {
-							return (
-								<AppointmentItem {...item} key={item.id}/>
-							)})
-						: null
+			{activeAppointments.length > 0
+				? activeAppointments.map(item => {
+					return (
+						<AppointmentItem {...item} key={item.id} openModal={setIsOpen} selectId={() => selectId(item.id)}/>
+					)})
+				: null
 			}
+			{isOpen ? <CancelModal handleClose={setIsOpen} selectedId={selectedId}/> : null}
 		</>
 	);
 }

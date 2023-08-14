@@ -6,18 +6,21 @@ import { Optional } from "utility-types";
 
 import { IAppointment } from "../../shared/interfaces/appointment.interface";
 
-// type Optional<T, K extends  keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
-
-type AppointmentProps = Optional<IAppointment, 'canceled'>;
+type AppointmentProps = Optional<IAppointment, 'canceled'> & {
+    openModal: (state: boolean) => void,
+    selectId: () => void
+};
 
 
 function AppointmentItem({
-        id,
-        name,
-        service,
-        phone,
-        date,
-        canceled
+    id,
+    name,
+    service,
+    phone,
+    date,
+    canceled,
+    openModal,
+    selectId
 }: AppointmentProps) {
     const [timeLeft, changeTimeLeft] = useState<string | null>(null);
 
@@ -59,7 +62,13 @@ function AppointmentItem({
                             <span>Time left:</span>
                             <span className="appointment__timer">{timeLeft}</span>
                         </div>
-                        <button className="appointment__cancel">Cancel</button>
+                        <button
+                            className="appointment__cancel"
+                            onClick={() => {
+                                openModal(true);
+                                selectId()
+                            }}
+                        >Cancel</button>
                     </>
                 : null
             }

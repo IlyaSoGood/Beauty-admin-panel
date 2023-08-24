@@ -13,10 +13,10 @@ function AppointmentList() {
 		activeAppointments,
 		getActiveAppointments
 	} = useContext(AppointmentsContext);
+
 	useEffect(() => {
 		getActiveAppointments();
 	}, []);
-	console.log(appointmentLoadingStatus)
 
 	const [isOpen, setIsOpen] = useState(false);
 	const [selectedId, selectId] = useState(0);
@@ -41,7 +41,7 @@ function AppointmentList() {
 					)})
 				: null
 			}
-			{isOpen ? <CancelModal handleClose={setIsOpen} selectedId={selectedId}/> : null}
+			<CancelModal handleClose={setIsOpen} selectedId={selectedId} isOpen={isOpen}/>
 		</>
 	);
 }

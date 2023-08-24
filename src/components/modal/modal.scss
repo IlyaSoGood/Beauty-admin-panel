@@ -9,6 +9,20 @@
 	width: 100%;
 	height: 100%;
 	background: rgba(255, 243, 223, 0.8);
+	&-enter {
+		opacity: 0;
+		&-active {
+			opacity: 1;
+			transition: opacity 500ms ease-in;
+		}
+	}
+	&-exit {
+		opacity: 1;
+		&-active {
+			opacity: 0;
+			transition: opacity 500ms ease-in;
+		}
+	}
 	&__body {
 		width: 390px;
 		min-height: 120px;

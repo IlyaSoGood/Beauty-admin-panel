@@ -41,7 +41,6 @@ function AppointmentItem({
         })
     }, [date])
 
-
     const formatterDate = dayjs(date).format('DD/MM/YYYY HH:mm')
     return (
         <div className="appointment">

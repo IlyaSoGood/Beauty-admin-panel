@@ -35,6 +35,11 @@ export default function reducer(
                 ...state,
                 appointmentLoadingStatus: 'error'
             }
+        //Обновление любых полей Appointment
+        case ActionsTypes.UPDATE_APPOINTMENT:
+            return {
+                ...state,
+            }
         default:
             return state;
     }

@@ -1,17 +1,34 @@
-import { useRef, useEffect } from "react";
+import Portal from "../portal/portal";
+import {useRef, useEffect, useState, useContext} from "react";
+import {AppointmentsContext} from "../../context/appointments/AppointmentsContext";
 import { CSSTransition } from "react-transition-group";
 
 import "./modal.scss";
-import Portal from "../portal/portal";
+
+
 
 interface IModalProps {
-	handleClose: (state: boolean) => void;
+	handleClose: (state: boolean) => void,
+	handleCancelItem: (id: number) => void,
 	selectedId: number;
 	isOpen: boolean;
 }
 
 function CancelModal({handleClose, selectedId, isOpen}: IModalProps) {
+	const { cancelAppointment, getActiveAppointments } = useContext(AppointmentsContext)
+
 	const nodeRef = useRef<HTMLDivElement>(null);
+
+	const [btnDisabled, setBtnDisabled] = useState<boolean>(false);
+	const [cancelStatus, setCancelStatus] = useState<boolean | null>(null);
+
+	const handleCancelAppointment = (id: number) => {
+		setBtnDisabled(true);
+		cancelAppointment(id).then(() => {
+			console.log('done');
+			setCancelStatus(true);
+		})
+	}
 
 	const escapeCallback = (e: KeyboardEvent): void => {
 		if (e.code === 'Escape') {
@@ -21,7 +38,7 @@ function CancelModal({handleClose, selectedId, isOpen}: IModalProps) {
 	}
 
 	useEffect(() => {
-		console.log('on')
+		// console.log('on')
 		// if (isOpen) {
 			document.addEventListener('keydown', escapeCallback);
 		// }
@@ -29,7 +46,7 @@ function CancelModal({handleClose, selectedId, isOpen}: IModalProps) {
 		// 	document.removeEventListener('keydown', escapeCallback);
 		// }
 		return () => {
-			console.log('off')
+			// console.log('off')
 			document.removeEventListener('keydown', escapeCallback);
 		}
 	}, [handleClose]);
@@ -50,7 +67,7 @@ function CancelModal({handleClose, selectedId, isOpen}: IModalProps) {
 							Are you sure you want to delete the appointment? ${selectedId}
 						</span>
 						<div className="modal__btns">
-							<button className="modal__ok">Ok</button>
+							<button className="modal__ok" onClick={() => handleCancelAppointment(selectedId)}>Ok</button>
 							<button className="modal__close" onClick={() => handleClose(false)}>Close</button>
 						</div>
 						<div className="modal__status">Success</div>

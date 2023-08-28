@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useCallback } from "react";
 
 import AppointmentItem from "../appointmentItem/AppointmentItem";
 import CancelModal from "../modal/CancelModal";
@@ -11,12 +11,29 @@ function AppointmentList() {
 	const {
 		appointmentLoadingStatus,
 		activeAppointments,
-		getActiveAppointments
+		getActiveAppointments,
+		// updateAppointment
+		cancelAppointment
 	} = useContext(AppointmentsContext);
 
 	useEffect(() => {
 		getActiveAppointments();
 	}, []);
+
+	const handleOpenModal = useCallback(
+	(id: number) => {
+		setIsOpen(true);
+		selectId(id)
+	},[]);
+
+	const handleCancelItem = useCallback(
+		(id: number) => {
+			// updateAppointment(id,{
+			// 	canceled: true
+			// })
+			setIsOpen(false)
+		},[]);
+
 
 	const [isOpen, setIsOpen] = useState(false);
 	const [selectedId, selectId] = useState(0);
@@ -37,11 +54,20 @@ function AppointmentList() {
 			{activeAppointments.length > 0
 				? activeAppointments.map(item => {
 					return (
-						<AppointmentItem {...item} key={item.id} openModal={setIsOpen} selectId={() => selectId(item.id)}/>
+						<AppointmentItem
+							{...item}
+							key={item.id}
+							openModal={handleOpenModal}
+						/>
 					)})
 				: null
 			}
-			<CancelModal handleClose={setIsOpen} selectedId={selectedId} isOpen={isOpen}/>
+			<CancelModal
+				handleClose={setIsOpen}
+				selectedId={selectedId}
+				isOpen={isOpen}
+				handleCancelItem={handleCancelItem}
+			/>
 		</>
 	);
 }

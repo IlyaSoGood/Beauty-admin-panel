@@ -36,10 +36,31 @@ const useAppointmentService = () => {
         return transformed;
     }
 
+    // const updateAppointment = async (id: number, body: Partial<IAppointment>): Promise<void> => {
+    //     const res = await request({
+    //         url: _apiBase + "/" + id,
+    //         method: "PATCH",
+    //         body: JSON.stringify(body),
+    //     });
+    //     if (!res.ok) {
+    //         throw new Error("Appointment-item doesn't update");
+    //     }
+    // };
+
+    const cancelOneAppointment = async (id: number) => {
+        return await request({
+            url: _apiBase + "/" + id,
+            method: "PATCH",
+            body: JSON.stringify({canceled: true})
+        })
+    }
+
     return {
         loadingStatus,
         getAllAppointments,
-        getAllActiveAppointments
+        getAllActiveAppointments,
+        // updateAppointment,
+        cancelOneAppointment
     }
 }
 

@@ -1,4 +1,4 @@
-import { useEffect, useState, memo } from "react";
+import {useEffect, useState, memo, useContext} from "react";
 import "./appointmentItem.scss";
 import dayjs from "dayjs";
 import getZero from "../../utils/getZero";
@@ -6,10 +6,11 @@ import { Optional } from "utility-types";
 
 import { IAppointment } from "../../shared/interfaces/appointment.interface";
 
-type AppointmentProps = Optional<IAppointment, 'canceled'> & {
-    openModal: (state: number) => void,
-};
 
+type AppointmentProps = Optional<IAppointment, 'canceled'> & {
+    openModal: (state: number) => void;
+    getActiveAppointments?: () => void;
+};
 
 const AppointmentItem = memo(({
     id,
@@ -19,19 +20,28 @@ const AppointmentItem = memo(({
     date,
     canceled,
     openModal,
+    getActiveAppointments
 }: AppointmentProps) => {
     const [timeLeft, changeTimeLeft] = useState<string | null>(null);
-
 
     useEffect(() => {
         changeTimeLeft((
             `${getZero(dayjs(date).diff(undefined, 'h'))}:${getZero(dayjs(date).diff(undefined, 'm') % 60)}`
         ))
 
+
         const intervalId = setInterval(() => {
             changeTimeLeft((
                 `${getZero(dayjs(date).diff(undefined, 'h'))}:${getZero(dayjs(date).diff(undefined, 'm') % 60)}`
             ))
+
+            if (dayjs(date).diff(undefined, 'm') % 60 === 0) {
+                if (getActiveAppointments) {
+                    getActiveAppointments();
+                }
+                clearInterval(intervalId);
+                return;
+            }
         }, 60000)
 
         return (() => {

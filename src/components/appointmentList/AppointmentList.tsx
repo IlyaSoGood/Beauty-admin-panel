@@ -12,8 +12,6 @@ function AppointmentList() {
 		appointmentLoadingStatus,
 		activeAppointments,
 		getActiveAppointments,
-		// updateAppointment
-		cancelAppointment
 	} = useContext(AppointmentsContext);
 
 	useEffect(() => {
@@ -28,9 +26,6 @@ function AppointmentList() {
 
 	const handleCancelItem = useCallback(
 		(id: number) => {
-			// updateAppointment(id,{
-			// 	canceled: true
-			// })
 			setIsOpen(false)
 		},[]);
 
@@ -58,6 +53,7 @@ function AppointmentList() {
 							{...item}
 							key={item.id}
 							openModal={handleOpenModal}
+							getActiveAppointments={getActiveAppointments}
 						/>
 					)})
 				: null

@@ -17,8 +17,6 @@ interface ProviderProps {
 interface AppointmentContextValue extends IAppointmentState{
     getAppointments: () => void,
     getActiveAppointments: () => void,
-    // updateAppointment: (id: number, body: Partial<IAppointment>) => void,
-    cancelAppointment: (id: number) => Promise<any>
 }
 
 export const AppointmentsContext = createContext<AppointmentContextValue>({
@@ -26,10 +24,6 @@ export const AppointmentsContext = createContext<AppointmentContextValue>({
     activeAppointments: initialState.activeAppointments,
     getAppointments: () => {},
     getActiveAppointments: () => {},
-    // updateAppointment: () => {},
-    cancelAppointment: (id: number) => {
-        return new Promise(() => {})
-    },
     appointmentLoadingStatus: initialState.appointmentLoadingStatus
 })
 
@@ -39,13 +33,12 @@ const AppointmentsContextProvider = ({ children }: ProviderProps) => {
         loadingStatus,
         getAllAppointments,
         getAllActiveAppointments,
-        // updateAppointment
-        cancelOneAppointment
     } = useAppointmentService();
 
     const value: AppointmentContextValue = {
         allAppointments: state.allAppointments,
         activeAppointments: state.activeAppointments,
+        appointmentLoadingStatus: loadingStatus,
         getAppointments: () => {
             getAllAppointments().then(data =>
                 dispatch({ type: ActionsTypes.SET_ALL_APPOINTMENTS, payload: data }))
@@ -53,17 +46,7 @@ const AppointmentsContextProvider = ({ children }: ProviderProps) => {
         getActiveAppointments: () => {
             getAllActiveAppointments().then(data =>
                 dispatch({ type: ActionsTypes.SET_ACTIVE_APPOINTMENTS, payload: data }))
-        },
-        // updateAppointment: (id, body) => {
-        //     updateAppointment(id, body)
-        //         .then(() => {
-        //             dispatch({ type: ActionsTypes.UPDATE_APPOINTMENT, payload: {id, body} })
-        //         })
-        // },
-        cancelAppointment: (id: number): Promise<any> => {
-            return cancelOneAppointment(id)
-        },
-        appointmentLoadingStatus: loadingStatus
+        }
     };
     return (
         <AppointmentsContext.Provider value={value}>

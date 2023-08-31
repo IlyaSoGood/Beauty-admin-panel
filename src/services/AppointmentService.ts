@@ -44,11 +44,23 @@ const useAppointmentService = () => {
         })
     }
 
+    const createNewAppointment =  async (body: IAppointment) => {
+        const id = new Date().getTime();
+        body['id'] = id;
+
+        return await request({
+            url: _apiBase,
+            method: "POST",
+            body: JSON.stringify(body)
+        })
+    }
+
     return {
         loadingStatus,
         getAllAppointments,
         getAllActiveAppointments,
-        cancelOneAppointment
+        cancelOneAppointment,
+        createNewAppointment
     }
 }
 
